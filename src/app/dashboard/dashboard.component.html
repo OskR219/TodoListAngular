@@ -1,0 +1,7 @@
+<app-navbar></app-navbar>
+<main role="main" class="container">
+  <div class="card-columns">
+    <app-task #newTaskComponent (saved)="saveNewTask()" [isNew]="true" [task]="newTask"></app-task>
+    <app-task *ngFor="let task of tasks" (saved)="updateTask()" [task]="task"></app-task>
+  </div>
+</main>

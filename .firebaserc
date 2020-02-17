@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "todolistangular-oskr219": {
+      "hosting": {
+        "todo-list": [
+          "todolistangular-oskr219"
+        ]
+      }
+    }
+  }
+}

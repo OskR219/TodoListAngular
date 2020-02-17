@@ -1,32 +1,58 @@
 <div class="card">
   <div class="card-body">
     <div class="position-relative">
-      <h5 class="card-title position-absolute placeholder text-muted" *ngIf="task.title == '' && (isEditing || isNew)">Task title...</h5>
+      <h5 class="card-title position-absolute placeholder text-muted" *ngIf="task.title == '' && (isEditing || isNew)">
+        Task title...</h5>
       <h5 [contentEditable]="isEditing || isNew" class="card-title editable" [textContent]="task.title"
         (input)="task.title=$event.target.textContent"></h5>
     </div>
     <div class="position-relative">
       <div class="position-absolute placeholder text-muted" *ngIf="task.description == '' && (isEditing || isNew)">Task
         description...</div>
-      <p [contentEditable]="isEditing || isNew" aria-multiline="true" role="textbox" aria-label="Crear una nota…" tabindex="0"
-        spellcheck="true" class="card-text editable" [textContent]="task.description"
+      <p [contentEditable]="isEditing || isNew" aria-multiline="true" role="textbox" aria-label="Task description…"
+        tabindex="0" spellcheck="true" class="card-text editable" [textContent]="task.description"
         (input)="task.description=$event.target.textContent"></p>
     </div>
     <div class="clearfix">
       <div class="float-right">
-      <button class="btn btn-primary mx-1" type="button">
-        <fa-icon [icon]="faLink"></fa-icon> <span class="sr-only">Link sub-task</span>
-      </button>
-      <button class="btn btn-primary mx-1" (click)="edit()" type="button" *ngIf="!isNew && !isEditing">
-        <fa-icon [icon]="faPencilAlt"></fa-icon> <span class="sr-only">Edit</span>
-      </button>
-      <button class="btn btn-success mx-1" (click)="save()" type="button" *ngIf="isNew || isEditing" [disabled]="!isValidTask">
-        <fa-icon [icon]="faCheck"></fa-icon> <span class="sr-only">Save</span>
-      </button>
-      <button class="btn btn-danger mx-1" (click)="discard()" type="button" *ngIf="isNew || isEditing" [disabled]="!isValidTask">
-        <fa-icon [icon]="faTimes"></fa-icon> <span class="sr-only">Cancel</span>
-      </button>
+        <button class="btn btn-danger mx-1" type="button" *ngIf="!isNew && !isEditing" (click)="delete()">
+          <fa-icon [icon]="faTrash"></fa-icon> <span class="sr-only">Delete</span>
+        </button>
+        <button class="btn btn-primary mx-1" (click)="edit()" type="button" *ngIf="!isNew && !isEditing">
+          <fa-icon [icon]="faPencilAlt"></fa-icon> <span class="sr-only">Edit</span>
+        </button>
+        <button class="btn btn-success mx-1" (click)="save()" type="button" *ngIf="isNew || isEditing"
+          [disabled]="!isValidTask">
+          <fa-icon [icon]="faCheck"></fa-icon> <span class="sr-only">Save</span>
+        </button>
+        <button class="btn btn-danger mx-1" (click)="discard()" type="button" *ngIf="isNew || isEditing">
+          <fa-icon [icon]="faTimes"></fa-icon> <span class="sr-only">Cancel</span>
+        </button>
       </div>
     </div>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item" *ngIf="isEditing || isNew">
+        <div>
+          <div class="position-relative">
+            <div class="position-absolute placeholder text-muted" *ngIf="subtask == ''">Subtask...</div>
+            <p [contentEditable]="true" aria-multiline="true" role="textbox" aria-label="Crear una nota…" tabindex="0"
+              spellcheck="true" class="card-text editable" [textContent]="subtask"
+              (input)="subtask=$event.target.textContent"></p>
+          </div>
+          <div class="float-right" *ngIf="subtask != ''">
+            <button class="btn btn-success mx-1" (click)="addSubtask()" type="button" [disabled]="subtask == ''">
+              <fa-icon [icon]="faCheck"></fa-icon> <span class="sr-only">Save</span>
+            </button>
+            <button class="btn btn-danger mx-1" (click)="discardSubtask()" type="button">
+              <fa-icon [icon]="faTimes"></fa-icon> <span class="sr-only">Cancel</span>
+            </button>
+          </div>
+        </div>
+      </li>
+      <li class="list-group-item" *ngFor="let subtask of task.subtasks; let i = index"><button
+          class="btn btn-danger mx-1" (click)="deleteSubtask(i)" *ngIf="isEditing || isNew" type="button">
+          <fa-icon [icon]="faTrash"></fa-icon> <span class="sr-only">Delete</span>
+        </button> {{ subtask }}</li>
+    </ul>
   </div>
 </div>

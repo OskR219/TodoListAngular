@@ -1,6 +1,6 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { Task } from './task';
-import { faLink, faCheck, faTimes, faPencilAlt } from '@fortawesome/free-solid-svg-icons'
+import { faLink, faCheck, faTimes, faPencilAlt, faTrash } from '@fortawesome/free-solid-svg-icons'
 
 @Component({
   selector: 'app-task',
@@ -9,40 +9,55 @@ import { faLink, faCheck, faTimes, faPencilAlt } from '@fortawesome/free-solid-s
 })
 export class TaskComponent implements OnInit {
 
-  @Input() task: Task;
+  @Input() task: Task = {
+    id: "",
+    title: "",
+    description: "",
+    status: "",
+    date: null,
+    uid: "",
+    subtasks: [],
+  };
   @Input() isNew = false;
-  @Output() saved = new EventEmitter<void>();
-  @Output() discarded = new EventEmitter<void>();
+  @Output() saved = new EventEmitter<Task>();
+  @Output() deleted = new EventEmitter<Task>();
 
   faLink = faLink;
   faCheck = faCheck;
   faTimes = faTimes;
-  faPencilAlt = faPencilAlt;  
+  faPencilAlt = faPencilAlt;
+  faTrash = faTrash;
 
-  public oldTask: Task;
+  public backupTask: Task;
 
   isEditing = false;
 
-  constructor() { }
+  subtask: string = "";
+
+  constructor() { 
+    this.backupTask = JSON.parse(JSON.stringify(this.task));
+  }
 
   ngOnInit(): void {
-    console.log(this.task)
   }
 
   discard(): void {
-    this.task = {...this.oldTask};
+    this.task = JSON.parse(JSON.stringify(this.backupTask));
     this.isEditing = false;
-    this.discarded.emit();
   }
 
   save(): void {
     this.isEditing = false;
-    this.saved.emit();
+    this.saved.emit(this.task);
   }
 
   edit(): void {
-    this.oldTask = {...this.task};
+    this.backupTask = JSON.parse(JSON.stringify(this.task));
     this.isEditing = true;
+  }
+
+  delete(): void {
+    this.deleted.emit(this.task);
   }
 
   get isValidTask(): boolean {
@@ -55,11 +70,30 @@ export class TaskComponent implements OnInit {
 
   public reset(): void {
     this.task = {
+      id: "",
       title: "",
       description: "",
       status: "",
       date: null,
+      uid: "",
+      subtasks: [],
     }
+  }
+
+  public addSubtask(): void {
+    if(!this.task.subtasks) {
+      this.task.subtasks = [];
+    }
+    this.task.subtasks.unshift(this.subtask);
+    this.subtask = "";
+  }
+
+  public discardSubtask(): void {
+    this.subtask = "";
+  }
+
+  public deleteSubtask(subtaskIndex): void {
+    this.task.subtasks.splice(subtaskIndex, 1);
   }
 
 }
